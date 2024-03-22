@@ -1,0 +1,31 @@
+### Recuperar las peliculas
+GET http://localhost:1234/movies
+
+### Recuperar una sola pelicula
+GET http://localhost:1234/movies/c8a7d63f-3b04-44d3-9d95-8782fd7dcfaf
+
+### Recuperar pelicula por genero
+GET http://localhost:1234/movies?genre=Action
+
+### Crear una pelicula con POST
+POST http://localhost:1234/movies
+Content-Type: application/json
+
+{
+    "title" : "The Godfather: Part II",
+    "year" : 1974,
+    "director" : "Francis Ford Coppola",
+    "duration" : 202,
+    "poster" : "https://m.media-amazon.com/images/M/MV5BMWMwMGQzZTItY2JlNC00OWZiLWIyMDctNDk2ZDQ2YjRjMWQ0XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg",
+    "genre" : ["Crime", "Drama"],
+    "rate" : 9.0
+}
+
+### Actualizar una pelicula con PATCH
+PATCH http://localhost:1234/movies/40679f8d-f15d-4b87-bfb9-d8004dac0c18
+Content-Type: application/json
+
+{
+    "rate": 10,
+    "year": "2000"
+}

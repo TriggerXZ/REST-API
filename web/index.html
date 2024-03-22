@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        article {
+            margin: 1rem;
+        }
+
+        img {
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <main></main>
+    <script type="module">
+        // En esta sección de código, hacemos una solicitud GET a la API en localhost:1234/movies
+        // para obtener la lista de películas.
+        // Luego, procesamos esa respuesta y la utilizamos para generar un HTML
+        // dinámico que se inserta en el main del documento.
+        // Cada película tiene un botón de eliminación. Al hacer clic en ese botón,
+        // hacemos una solicitud DELETE a la API en localhost:1234/movies/<id>,
+        // donde <id> es el ID de la película.
+        // Si la respuesta es exitosa, se elimina el artículo correspondiente
+        // del HTML.
+
+        fetch('http://localhost:1234/movies')
+            .then(res => res.json()) // Convertir la respuesta a JSON
+            .then(movies => {
+
+                // Generar el HTML para cada película
+                const html = movies.map(movie => {
+                    return `
+                <article data-id="${movie.id}">
+                    <h2>${movie.title}</h2>
+                    <img src="${movie.poster}" alt="${movie.title}">
+                    <p>${movie.year}</p>
+                    <p>${movie.genre.join(',')}</p>
+                    <p>${movie.rate}</p>
+                    <button>Eliminar</button>
+                </article>`
+                }).join('')
+
+                // Insertar el HTML generado en el main
+                const main = document.querySelector('main');
+                main.innerHTML = html;
+
+                // Añadir un listener a los botones de eliminación
+                main.addEventListener('click', (e) => {
+                    if (e.target.matches('button')) { // Si se hace clic en un botón
+                        const article = e.target.closest('article'); // Obtener el artículo correspondiente
+                        const id = article.dataset.id; // Obtener el ID de la película
+                        const url = `http://localhost:1234/movies/${id}`; // Generar la URL para DELETE
+
+                        fetch(url, { // Hacer la solicitud DELETE
+                            method: 'DELETE'
+                        })
+                        .then(res => {
+                            if (res.ok) { // Si la respuesta es exitosa
+                                article.remove(); // Eliminar el artículo correspondiente del HTML
+                            }
+                        })
+                        .catch(err => console.log(err)); // Si hay un error, mostrarlo en la consola
+                    }
+                });
+
+            })
+            .catch(err => console.log(err)); // Si hay un error al obtener las películas, mostrarlo en la consola
+
+    </script>
+</body>
+
+</html>
